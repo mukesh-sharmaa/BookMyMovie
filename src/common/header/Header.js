@@ -6,8 +6,25 @@ import Modal from "react-modal";
 
 export default function Header(){
 
+    const [loginData, setLoginData] = useState(
+        {
+            username:'',
+            password:''
+        }
+    )
+
+    const [registerData, setRegisterData] = useState(
+        {
+            firstName:'',
+            lastName:'',
+            email:'',
+            password:'',
+            contactNo:''
+        }
+    )
     const [showModal, setShowModal] = useState(false);
     const [selectedTab, setSelectedTab] = useState(0);
+    const [message, setMessage] = useState('');
 
     function openModal(){
         setShowModal(true);
@@ -15,10 +32,58 @@ export default function Header(){
 
     function closeModal(){
         setShowModal(false)
+
+        setLoginData({
+            username:'',
+            password:''
+        })
+
+        setRegisterData(
+            {
+                firstName:'',
+                lastName:'',
+                email:'',
+                password:'',
+                contactNo:''
+            }
+        )
+
+        setMessage('')
+
     }
 
     function handleTabChange(event, newValue){
         setSelectedTab(newValue)
+    }
+
+    function handleLoginSubmission(e){
+        e.preventDefault();
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.username === loginData.username && u.password === loginData.password);
+        if (user) {
+            console.log('Login successful');
+            setMessage('Login successful');
+            // Here you can redirect the user or set some state to indicate login
+        } else {
+            console.log('Invalid username or password')
+            setMessage('Invalid username or password');
+        }
+
+    }
+
+    function handleRegisterSubmission(e){
+        e.preventDefault();
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const existingUser = users.find(u=> u.username === registerData.username);
+        if(existingUser){
+            setMessage('Username Already exist')
+        }
+        else{
+            users.push(registerData);
+            localStorage.setItem('users', JSON.stringify(users));
+            setMessage('User Registered Succesfully')
+        }
+
     }
     
 
@@ -51,54 +116,72 @@ export default function Header(){
 
          {selectedTab === 0 && (
             <div className="form-container">
-            <FormControl >
+            <FormControl  onSubmit={handleLoginSubmission}>
                 <TextField 
                     style={{ marginBottom: '20px', marginTop:'20px'}}
                     label="Username"
-                    required="true"
+                    required
+                    value={loginData.username}
+                    onChange={(e) => setLoginData({...loginData, username:e.target.value})}
                 />
                 <TextField 
                     style={{ marginBottom: '20px' }}
                     label="Password"
-                    required="true"
+                    required
                     type="password"
+                    value={loginData.password}
+                    onChange={(e) => setLoginData({...loginData, password:e.target.value})}
                 />
-                <Button variant="contained" style={{backgroundColor:'blue', color:'white', width:'25px', margin:'auto'}}>LOGIN</Button>
+                <Button variant="contained" type="submit" style={{backgroundColor:'blue', color:'white', width:'25px', margin:'auto'}}>LOGIN</Button>
             </FormControl>
             </div>
          )}
          {selectedTab === 1 && (
             <div className="form-container">
+            <form onSubmit={(e) =>handleRegisterSubmission(e)}>    
             <FormControl >
                 <TextField 
                     style={{ marginBottom: '20px', marginTop:'20px'}}
                     label="First Name"
-                    required="true"
+                    required
+                    value={registerData.firstName}
+                    onChange={(e)=> setRegisterData({...registerData, firstName:e.target.value})}
+                    
+
                 />
                 <TextField 
                     style={{ marginBottom: '20px' }}
                     label="Last Name"
-                    required="true"
+                    required
+                    value={registerData.lastName}
+                    onChange={(e)=> setRegisterData({...registerData, lastName:e.target.value})}
                 />
                 <TextField 
                     style={{ marginBottom: '20px' }}
                     label="Email"
-                    required="true"
+                    required
                     type="email"
+                    value={registerData.email}
+                    onChange={(e)=> setRegisterData({...registerData, email:e.target.value})}
                 />
                 <TextField 
                     style={{ marginBottom: '20px' }}
                     label="Password"
-                    required="true"
+                    required
                     type="password"
+                    value={registerData.password}
+                    onChange={(e)=> setRegisterData({...registerData, password:e.target.value})}
                 />
                 <TextField 
                     style={{ marginBottom: '20px' }}
                     label="Contact No"
-                    required="true"
+                    required
+                    value={registerData.contactNo}
+                    onChange={(e)=> setRegisterData({...registerData, contactNo:e.target.value})}
                 />
-                <Button variant="contained" style={{backgroundColor:'blue', color:'white'}}>REGISTER</Button>
+                <Button variant="contained" type="submit" style={{backgroundColor:'blue', color:'white'}}>REGISTER</Button>
             </FormControl>
+            </form>
             </div>
          )}
         </Modal>
