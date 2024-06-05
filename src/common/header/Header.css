@@ -4,41 +4,23 @@
     padding-top: 8px;
     padding-bottom: 8px;
     padding-right: 32px;
-    padding-left: 16px;
+    padding-left: 32px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
 }
 
 .logo{
     background-color: #ff7f7f;
     height: 35px;
-    animation:rotateLogo 8s linear infinite;
-    margin-left: 20px;
+    animation: rotate 5s linear infinite;
 }
 
-.login-button{
-    margin-right: 10px;
-}
 
-@keyframes rotateLogo {
-    0%{
+@keyframes rotate {
+    from{
         transform: rotate(0deg);
     }
-    100%{
+    to{
         transform: rotate(360deg);
     }
-    
 }
-
-.form-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-
-
-
-
-
